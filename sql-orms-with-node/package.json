@@ -1,0 +1,16 @@
+{
+  "name": "sql-orms-with-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app2.js",
+  "scripts": {
+    "start": "node app2.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sequelize": "^6.34.0",
+    "sqlite3": "^5.1.6"
+  }
+}
