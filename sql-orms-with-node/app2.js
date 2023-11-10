@@ -84,14 +84,42 @@ const { Op } = db.Sequelize;
         console.log(people.map(person => person.toJSON()));
 
         const movies = await Movie.findAll({
-            attributes: ['id', 'title'],
-            where: {
+            attributes: ['id', 'title'], //attributes to return
+            where: {//both conditions must be true AND
                 releaseDate: {
                     [Op.gte]: '2004-01-01' //greater than or equal to 
+                },
+                runtime: {
+                    [Op.gt]: 95,
                 }
-            }
+            },
+            order: [['id', 'DESC']] //IDs in descending order
         });
         console.log(movies.map(movie => movie.toJSON()));
+
+        //Updates
+        const toyStory3 = await Movie.findByPk(3);
+        //toyStory3.isAvailableOnVHS = true;
+        //await toyStory3.save();
+        
+        //with update()
+        await toyStory3.update({
+            isAvailableOnVHS: true,
+            title: 'Trinket Tale 3', //new title
+        }, { fields: ['isAvailableOnVHS'] }); //which variable to be updated and saved to the db
+
+
+        console.log(toyStory3.get({ plain: true }) ); //same as toJSON()
+
+        //DELETE
+        //find a record
+        const toyStory = await Movie.findByPk(3);
+
+        //delete a record
+        await toyStory.destroy();
+
+        const newMovies = await Movie.findAll();
+        console.log( newMovies.map(movie => movie.toJSON()));
 
     } catch(error) { 
         //Sequelize containers errors property, an array with 1 or more ValidationErrorItems
@@ -115,5 +143,25 @@ const { Op } = db.Sequelize;
  * findAll() retrieves a collection of all records, instead of a single record
  * findAll() can also take options object to filter results
  * 
+ * 
+ * can check if a string value "startsWith" or "endsWith":
+ * title: {
+ *  [Op.endsWith]: 'story
+ * }
+ * 
+ * Check if a number falls between values
+ * runtime: {
+ *  [Op.between]: [75, 115]
+ * }
+ * 
+ * UPDATE VALUES
+ * 1. Dot notation: (instance.property = new value) and then persist changes with save()
+ * 2. Use the update()
+ * Takes options argument (fields property) to specify exactly which attributes should be saved
+ * 
+ * DELETE A RECORD
+ * Using the destory() method
+ * 
+ * "paranoid" setting is for "soft deletes". You mark a record as deleted instead of physically removing it from the db
  */
 
